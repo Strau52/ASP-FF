@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Abstract_and_document_management_website.Models
+namespace OGE3K6_Abstract_and_document_management.Models
 {
     public class SiteUser : IdentityUser
     {

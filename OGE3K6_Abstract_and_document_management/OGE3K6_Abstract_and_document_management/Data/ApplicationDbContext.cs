@@ -15,5 +15,6 @@ namespace OGE3K6_Abstract_and_document_management.Data
         }
 
         public DbSet<Abstract> Abstracts { get; set; }
+        public DbSet<SiteUser> Users { get; set; }
     }
 }
