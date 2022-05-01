@@ -1,0 +1,102 @@
+﻿@model OGE3K6_Abstract_and_document_management.Models.Abstract
+@using OGE3K6_Abstract_and_document_management.Data
+@using Microsoft.AspNetCore.Identity
+@inject ApplicationDbContext context;
+@inject UserManager<IdentityUser> userManager
+
+@{
+    ViewData["Title"] = "Upload abstract";
+    Abstract actualAbstract = this.context.Abstracts.FirstOrDefault(t => t.Uploader == userManager.GetUserAsync(this.User).Result);
+}
+
+@if (actualAbstract == null)
+{
+    <h1>Upload your abstract!</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="UploadAbstract">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="AbstractTitle" class="control-label"></label>
+                    <input asp-for="AbstractTitle" class="form-control" />
+                    <span asp-validation-for="AbstractTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AbstractText" class="control-label"></label>
+                    <textarea maxlength=2500 rows=20 cols=150 asp-for="AbstractText" class="form-control"></textarea>
+                    <span asp-validation-for="AbstractText" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Upload abstract" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else if (actualAbstract.Status == AbstractStatus.ToBeAmmended)
+{
+    <h1>Please make the amends to your abstract!</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="UploadAbstract">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="AbstractTitle" class="control-label"></label>
+                    <input asp-for="AbstractTitle" class="form-control" value="@actualAbstract.AbstractTitle" />
+                    <span asp-validation-for="AbstractTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AbstractText" class="control-label"></label>
+                    <textarea maxlength=2500 rows=20 cols=150 asp-for="AbstractText" class="form-control">
+                        @actualAbstract.AbstractText </textarea>
+                    <span asp-validation-for="AbstractText" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Upload abstract" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+
+    string spanClass = "";
+    switch (actualAbstract.Status)
+    {
+        case AbstractStatus.Uploaded:
+            spanClass = "text-warning font-weight-bolder";
+            break;
+        case AbstractStatus.Accepted:
+            spanClass = "text-success font-weight-bolder";
+            break;
+        case AbstractStatus.Rejected:
+            spanClass = "text-danger font-weight-bolder";
+            break;
+    }
+    <div class="card text-white text-center bg-secondary mb-3">
+        <div class="card-header"><h1>Thank you for uploading your abstract!</h1></div>
+        <div class="card-body">
+            <h4>The status of your abstract: <span class="@spanClass">@actualAbstract.Status.ToString()</span></h4>
+            <p class="card-text">You already submitted your abstrasct for this conference! Our reviewers will review your work as soon as possible and the will send feedback!</p>
+        </div>
+        <div class="card-footer">
+            <p>If your abstract status is "Accepted" then we accepted your abstract!</p>
+            <p>If its "Rejected" then we rejected your abstract beacuse it did not meet the requirements!</p>
+            <p> If it needs to be ammended then please ammend your abstract!</p>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}
+

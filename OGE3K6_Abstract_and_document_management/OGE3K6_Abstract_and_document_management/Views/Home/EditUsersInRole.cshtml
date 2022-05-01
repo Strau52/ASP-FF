@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model List<IdentityUser>
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    var roleId = ViewBag.roleId;
+}
+
+
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>Add or remove users from this role</h2>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var isSelected = await UserManager.IsInRoleAsync(Model[i], ViewBag.roleName);
+                <div class="form-check m-1">
+                    <input type="hidden" asp-for="@Model[i].Id">
+                    <input type="hidden" asp-for="@Model[i].UserName">
+                    <input type="checkbox" disabled asp-for="@isSelected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@isSelected"> @Model[i].UserName</label>
+                    @if (isSelected)
+                    {
+                        <a asp-action="EditUserInRole" asp-route-userId="@Model[i].Id" asp-route-roleId="@roleId" class="btn btn-primary">Remove user from role</a>
+                    }
+                    else
+                    {
+                        <a asp-action="EditUserInRole" asp-route-userId="@Model[i].Id" asp-route-roleId="@roleId" class="btn btn-primary">Add user to role </a>
+                    }
+
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Update" class="btn btn-primary" />
+            <a asp-action="EditRole" asp-route-id="@roleId" class="btn btn-primary">Cancel</a>
+        </div>
+    </div>
+</form>

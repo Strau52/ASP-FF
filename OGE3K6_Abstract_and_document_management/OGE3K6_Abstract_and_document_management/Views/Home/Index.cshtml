@@ -1,8 +1,37 @@
-﻿@{
+﻿@using OGE3K6_Abstract_and_document_management.Data
+@using Microsoft.AspNetCore.Identity
+@inject ApplicationDbContext context;
+@inject UserManager<IdentityUser> userManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
     ViewData["Title"] = "Home Page";
+    SiteUser siteUser = (userManager.GetUserAsync(this.User).Result as SiteUser);
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h1 class="display-4">Welcome @siteUser.FullName!</h1>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome!</h1>
+    }
+    <div class="card-deck">
+        <div class="card p-3 card text-white bg-dark">
+            <div class="card-title">
+                <h1>I'd love to welcome you on my page!</h1>
+            </div>
+            <p>Here you can upload your abstract for the actual conference! <br /> We have a talented team who will evaluate your work and then help you to participate in the conference.</p>
+            <blockquote class="blockquote mb-0 card-body">
+                „Give me knowledge or give me death!“
+                <footer class="blockquote-footer">
+                    <small class="text-muted">
+                        Kurt Vonnegut <cite title="Source Title">https://quotepark.com/hu/szerzok/kurt-vonnegut/</cite>
+                    </small>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IdentityRole
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Edit role";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<form method="post" class="mt-3">
+    <div class="form-group row">
+        <label asp-for="Id" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Id" disabled class="form-control" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Name" required class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a asp-action="RoleManagement" class="btn btn-primary">Cancel</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Users in this role</h3>
+        </div>
+        <div class="card-body">
+            @if (UserManager.GetUsersInRoleAsync(Model.Name).Result.Any())
+            {
+                foreach (var user in UserManager.GetUsersInRoleAsync(Model.Name).Result)
+                {
+                    <ul>
+                        <li>
+                            <h5 class="card-title">@user</h5>
+                        </li>
+                    </ul>
+                }
+            }
+            else
+            {
+                <h3 class="card-title">None at the moment!</h3>
+            }
+        </div>
+        <div class="card-footer">
+            <a asp-action="EditUsersInRole" asp-controller="Home" asp-route-roleId="@Model.Id" class="btn btn-primary">Add or remove users</a>
+        </div>
+    </div>
+</form>

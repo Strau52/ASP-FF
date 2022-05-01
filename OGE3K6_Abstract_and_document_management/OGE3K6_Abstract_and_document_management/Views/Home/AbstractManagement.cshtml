@@ -1,0 +1,75 @@
+﻿@model IEnumerable<OGE3K6_Abstract_and_document_management.Models.Abstract>
+
+@{
+    ViewData["Title"] = "AbstractManagement";
+}
+
+<h1>AbstractManagement</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AbstractTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AbstractText)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UploadTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AbstractTitle)
+                </td>
+                <td>
+                    @if (item.AbstractText.Length > 50)
+                    {
+                        @item.AbstractText.Substring(0, 50)
+                    }
+                    else
+                    {
+                        @item.AbstractText
+                    }
+                    ...
+                    @*@Html.DisplayFor(modelItem => item.AbstractText)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UploadTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReviewedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (this.User.IsInRole("reviewer") && item.Status == AbstractStatus.Uploaded)
+                    {
+                        <a asp-controller="Home" asp-action="AbstractDetails" asp-route-id="@item.UID" class="btn btn-info">Review</a>
+                    }
+                    else if (this.User.IsInRole("admin"))
+                    {
+                        if (item.Status == AbstractStatus.Uploaded)
+                        {
+                            <a asp-controller="Home" asp-action="AbstractDetails" asp-route-id="@item.UID" class="btn btn-info">Review</a>
+                        }
+                        <a asp-controller="Home" asp-action="DeleteAbstract" asp-route-id="@item.UID" class="btn btn-danger">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
